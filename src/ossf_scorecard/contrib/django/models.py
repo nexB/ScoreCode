@@ -29,7 +29,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class Package_score_Mixin(models.Model):
+class PackageScoreMixin(models.Model):
     """
     Abstract Model for saving OSSF scorecard data.
     """
@@ -78,7 +78,7 @@ class Package_score_Mixin(models.Model):
         abstract = True
 
 
-class scorecard_checks_Mixin(models.Model):
+class ScorecardChecksMixin(models.Model):
 
     check_name = models.CharField(
         max_length=100,
@@ -113,6 +113,9 @@ class scorecard_checks_Mixin(models.Model):
             "A list of details/errors reharding the score"
         ),
     )
+
+    class Meta:
+        abstract = True
 
 
 

@@ -1,5 +1,5 @@
 
-def fetch_documentation_url(url: str):
+def FetchDocumentationUrl(url: str):
     """
     Given a fully qualified documentation URL with check slugs
     this will function will remove the slugs and return the original URL
@@ -24,4 +24,3 @@ def fetch_documentation_url(url: str):
         return None
 
 
-    
