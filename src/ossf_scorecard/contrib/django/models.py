@@ -34,8 +34,13 @@ class PackageScoreMixin(models.Model):
     Abstract Model for saving OSSF scorecard data.
     """
 
+    class ScoringTool(models.TextChoices):
+        OSSF = "ossf-scorecard"
+        OTHERS = "others"
+
     scoring_tool = models.CharField(
         max_length=100,
+        choices=ScoringTool.choices,
         blank=True,
         help_text=_(
             "Defines the source of a score or any other scoring metrics"
