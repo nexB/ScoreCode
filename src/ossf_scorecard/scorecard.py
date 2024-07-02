@@ -1,7 +1,7 @@
 import requests
 
 
-def get_scorecard(platform, org, repo):
+def GetScorecard(platform, org, repo):
     url = f"https://api.securityscorecards.dev/projects/{platform}/{org}/{repo}"
     response = requests.get(url)
 
@@ -9,14 +9,6 @@ def get_scorecard(platform, org, repo):
         return response.json()
     else:
         response.raise_for_status()
-
-
-def print_scorecard(platform, org, repo):
-    try:
-        data = get_scorecard(platform, org, repo)
-        print(data)
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching data from OpenSSF Scorecard API: {e}")
 
 #
 # if __name__ == '__main__':
