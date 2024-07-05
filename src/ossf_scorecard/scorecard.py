@@ -22,7 +22,8 @@ def GetScorecard(platform, org, repo):
         elif response.status_code == 404:
             raise requests.exceptions.HTTPError(f"404 Not Found: {error_message}")
         elif response.status_code == 500:
-            raise requests.exceptions.HTTPError(f"500 Internal Server Error: {error_message}")
+            raise requests.exceptions.HTTPError(f"500 Internal Server Error: "
+                                                f"{error_message}")
         else:
             response.raise_for_status()
 
