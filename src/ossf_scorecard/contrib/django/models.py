@@ -115,7 +115,7 @@ class ScorecardChecksMixin(models.Model):
         default=list,
         blank=True,
         help_text=_(
-            "A list of details/errors reharding the score"
+            "A list of details/errors regarding the score"
         ),
     )
 

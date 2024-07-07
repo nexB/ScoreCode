@@ -59,30 +59,33 @@ class ScorecardChecksMixin(ModelMixin):
 
     check_name = String(
         repr=True,
-        label='scoring tool',
-        help='Defines the source of a score or any other scoring metrics'
-             'For example: ossf-scorecard for scorecard data')
+        label='check name',
+        help="Defines the name of check corresponding to the OSSF score"
+             "For example: Code-Review or CII-Best-Practices"
+             "These are the some of the checks which are performed on a scanned "
+             "package")
 
     check_score = String(
         repr=True,
-        label='scoring tool version',
-        help='Defines the version of the scoring tool used for scanning the package')
+        label='check score',
+        help='Defines the score of the check for the package scanned'
+             'For Eg : 9 is a score given for Code-Review')
 
     reason = String(
         repr=True,
-        label='score',
-        help='Score of the package which is scanned')
+        label='reason',
+        help='Gives a reason why a score was given for a specific check'
+             'For eg, : Found 9/10 approved changesets -- score normalized to 9')
 
     details = List(
         repr=True,
-        label='scoring documentation url',
-        help='Version of the package as a string.')
+        label='score details',
+        help='A list of details/errors regarding the score')
 
     @classmethod
     def from_data(cls, check_data):
         """
-        Return PackageScore object created out of the package metadata
-        present in `scorecard_data` mapping.
+        Return a list of check objects for a package.
         """
         data = []
 
@@ -135,9 +138,8 @@ class PackageScoreMixin(ModelMixin):
 
     checks = List(
         item_type=ScorecardChecksMixin,
-        label = 'scoring tool',
-        help = 'Defines the source of a score or any other scoring metrics'
-           'For example: ossf-scorecard for scorecard data'
+        label='checks',
+        help='List of all checks used'
     )
 
 
@@ -153,8 +155,9 @@ class PackageScoreMixin(ModelMixin):
             "scoring_tool_documentation_url": FetchDocumentationUrl(
                 scorecard_data.get("checks")[0].get("documentation").get("url")
             ),
+            "scoring_tool" : "OSSF",
             "score_date": scorecard_data.get("date", None),
-            "checks": ScorecardChecksMixin.from_data(scorecard_data.get('checks'))
+            "checks": ScorecardChecksMixin.from_data(scorecard_data.get('checks', []))
         }
 
         scorecard_data = cls(**final_data)

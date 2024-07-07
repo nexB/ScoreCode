@@ -1,12 +1,13 @@
 import requests
-
+from contrib.models import PackageScoreMixin
 
 def GetScorecard(platform, org, repo):
     url = f"https://api.securityscorecards.dev/projects/{platform}/{org}/{repo}"
     response = requests.get(url)
 
     if response.status_code == 200:
-        return response.json()
+        score_data = response.json()
+        return PackageScoreMixin.from_data(score_data)
     else:
         try:
             error_message = response.json().get('message', 'No error message provided')
