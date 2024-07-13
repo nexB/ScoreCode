@@ -4,7 +4,7 @@ from commoncode.datautils import Date
 from commoncode.datautils import String
 from commoncode.datautils import List
 
-from utils import FetchDocumentationUrl
+from ossf_scorecard.contrib.utils import FetchDocumentationUrl
 
 class ModelMixin:
     """
