@@ -1,4 +1,5 @@
 
+
 def FetchDocumentationUrl(url: str):
     """
     Given a fully qualified documentation URL with check slugs
@@ -22,5 +23,3 @@ def FetchDocumentationUrl(url: str):
 
     except ValueError:
         return None
-
-
