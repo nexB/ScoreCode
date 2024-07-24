@@ -1,10 +1,10 @@
 import attr
-
 from commoncode.datautils import Date
-from commoncode.datautils import String
 from commoncode.datautils import List
+from commoncode.datautils import String
 
 from ossf_scorecard.contrib.utils import FetchDocumentationUrl
+
 
 class ModelMixin:
     """
@@ -34,6 +34,7 @@ class ModelMixin:
         kwargs = {k: v for k, v in mapping.items() if k in known_attr}
         return cls(**kwargs)
 
+
 def to_tuple(collection):
     """
     Return a tuple of basic Python values by recursively converting a mapping
@@ -59,28 +60,30 @@ class ScorecardChecksMixin(ModelMixin):
 
     check_name = String(
         repr=True,
-        label='check name',
+        label="check name",
         help="Defines the name of check corresponding to the OSSF score"
-             "For example: Code-Review or CII-Best-Practices"
-             "These are the some of the checks which are performed on a scanned "
-             "package")
+        "For example: Code-Review or CII-Best-Practices"
+        "These are the some of the checks which are performed on a scanned "
+        "package",
+    )
 
     check_score = String(
         repr=True,
-        label='check score',
-        help='Defines the score of the check for the package scanned'
-             'For Eg : 9 is a score given for Code-Review')
+        label="check score",
+        help="Defines the score of the check for the package scanned"
+        "For Eg : 9 is a score given for Code-Review",
+    )
 
     reason = String(
         repr=True,
-        label='reason',
-        help='Gives a reason why a score was given for a specific check'
-             'For eg, : Found 9/10 approved changesets -- score normalized to 9')
+        label="reason",
+        help="Gives a reason why a score was given for a specific check"
+        "For eg, : Found 9/10 approved changesets -- score normalized to 9",
+    )
 
     details = List(
-        repr=True,
-        label='score details',
-        help='A list of details/errors regarding the score')
+        repr=True, label="score details", help="A list of details/errors regarding the score"
+    )
 
     @classmethod
     def from_data(cls, check_data):
@@ -103,6 +106,7 @@ class ScorecardChecksMixin(ModelMixin):
 
         return data
 
+
 @attr.attributes(slots=True)
 class PackageScoreMixin(ModelMixin):
     """
@@ -110,38 +114,29 @@ class PackageScoreMixin(ModelMixin):
     This base class is used for all package-like objects, whether they are manifests
     or actual package instances.
     """
+
     scoring_tool = String(
         repr=True,
-        label='scoring tool',
-        help='Defines the source of a score or any other scoring metrics'
-             'For example: ossf-scorecard for scorecard data')
+        label="scoring tool",
+        help="Defines the source of a score or any other scoring metrics"
+        "For example: ossf-scorecard for scorecard data",
+    )
 
     scoring_tool_version = String(
         repr=True,
-        label='scoring tool version',
-        help='Defines the version of the scoring tool used for scanning the package')
-
-    score = String(
-        repr=True,
-        label='score',
-        help='Score of the package which is scanned')
-
-    scoring_tool_documentation_url = String(
-        repr=True,
-        label='scoring documentation url',
-        help='Version of the package as a string.')
-
-    score_date = Date(
-        repr=True,
-        label='score date',
-        help='score date')
-
-    checks = List(
-        item_type=ScorecardChecksMixin,
-        label='checks',
-        help='List of all checks used'
+        label="scoring tool version",
+        help="Defines the version of the scoring tool used for scanning the package",
     )
 
+    score = String(repr=True, label="score", help="Score of the package which is scanned")
+
+    scoring_tool_documentation_url = String(
+        repr=True, label="scoring documentation url", help="Version of the package as a string."
+    )
+
+    score_date = Date(repr=True, label="score date", help="score date")
+
+    checks = List(item_type=ScorecardChecksMixin, label="checks", help="List of all checks used")
 
     @classmethod
     def from_data(cls, scorecard_data):
@@ -155,13 +150,11 @@ class PackageScoreMixin(ModelMixin):
             "scoring_tool_documentation_url": FetchDocumentationUrl(
                 scorecard_data.get("checks")[0].get("documentation").get("url")
             ),
-            "scoring_tool" : "OSSF",
+            "scoring_tool": "OSSF",
             "score_date": scorecard_data.get("date", None),
-            "checks": ScorecardChecksMixin.from_data(scorecard_data.get('checks', []))
+            "checks": ScorecardChecksMixin.from_data(scorecard_data.get("checks", [])),
         }
 
         scorecard_data = cls(**final_data)
 
         return scorecard_data
-
-

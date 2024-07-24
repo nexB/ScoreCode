@@ -1,16 +1,17 @@
-import requests
-from contrib.models import PackageScoreMixin
-import logging
 from collections import namedtuple
 from urllib.parse import urlparse
+
 import requests
+
 from ossf_scorecard import SCORECARD_API_URL
+from ossf_scorecard.contrib.models import PackageScoreMixin
 
 session = requests.Session()
 
+
 def GetScorecard(platform, org, repo):
 
-    url = f"{SCORECARD_API_URL}/{platform}/{org}/{repo}"
+    url = f"{SCORECARD_API_URL}/projects/{platform}/{org}/{repo}"
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -18,9 +19,9 @@ def GetScorecard(platform, org, repo):
         return PackageScoreMixin.from_data(score_data)
     else:
         try:
-            error_message = response.json().get('message', 'No error message provided')
+            error_message = response.json().get("message", "No error message provided")
         except ValueError:
-            error_message = response.text or 'No error message provided'
+            error_message = response.text or "No error message provided"
 
         if response.status_code == 400:
             raise requests.exceptions.HTTPError(f"400 Bad Request: {error_message}")
@@ -31,11 +32,9 @@ def GetScorecard(platform, org, repo):
         elif response.status_code == 404:
             raise requests.exceptions.HTTPError(f"404 Not Found: {error_message}")
         elif response.status_code == 500:
-            raise requests.exceptions.HTTPError(f"500 Internal Server Error: "
-                                                f"{error_message}")
+            raise requests.exceptions.HTTPError(f"500 Internal Server Error: " f"{error_message}")
         else:
             response.raise_for_status()
-
 
 
 def is_configured():
@@ -51,7 +50,7 @@ def is_available():
         return False
 
     try:
-        response = session.head(SCORECARD_API_URL)
+        response = session.get(SCORECARD_API_URL)
         response.raise_for_status()
     except requests.exceptions.RequestException as request_exception:
         # logger.debug(f"{label} is_available() error: {request_exception}")
@@ -74,17 +73,54 @@ def fetch_scorecard_info(packages, logger):
         valid, else None.
 
     """
+    unsaved_objects = []
+
     for package in packages:
+
         url = package.vcs_url
-        repo_data = extract_repo_info(url)
 
-        if repo_data:
+        if url:
+            repo_data = extract_repo_info(url)
 
-            scorecard_data = GetScorecard(
-                platform=repo_data.platform, org=repo_data.org, repo=repo_data.repo
-            )
+            if repo_data:
 
-            logger.info(f"Fetching scorecard data for package: {scorecard_data}")
+                scorecard_data = GetScorecard(
+                    platform=repo_data.platform, org=repo_data.org, repo=repo_data.repo
+                )
+
+                unsaved_objects.append((scorecard_data, package))
+                logger.info(f"Fetching scorecard data for package: {scorecard_data}")
+
+    return unsaved_objects
+
+
+def save_scorecard_info(package_scorecard_data, cls, logger):
+    """
+    Save scorecard information for packages.
+
+    Args
+    ----
+        package_scorecard_data (list): List of tuples containing scorecard JSON data
+                                        and package object.
+        cls (class): Class used to create score objects from JSON data.
+        logger (logging.Logger): Logger instance for logging messages.
+
+    Returns
+    -------
+        None
+    """
+
+    if package_scorecard_data:
+
+        for data_pack in package_scorecard_data:
+
+            if data_pack:
+
+                package = data_pack[1]
+                scorecard_json_data = data_pack[0]
+
+                score_object = cls.create_from_data(scorecard_json_data, package)
+                logger.info(f"No VCS URL Found for {package.name}")
 
 
 def extract_repo_info(url):
@@ -124,8 +160,3 @@ def extract_repo_info(url):
     repo = path_parts[1]
 
     return RepoData(platform=platform, org=org, repo=repo)
-
-if __name__ == '__main__':
-    if is_configured():
-        data = GetScorecard("github.com", "nexB", "scancode-toolkit")
-        print(data)

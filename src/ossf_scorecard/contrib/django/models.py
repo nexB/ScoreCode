@@ -74,9 +74,7 @@ class PackageScoreMixin(models.Model):
         blank=True,
         null=True,
         editable=False,
-        help_text=_(
-            "Date when the scoring was calculated on the package"
-        ),
+        help_text=_("Date when the scoring was calculated on the package"),
     )
 
     class Meta:
@@ -107,21 +105,17 @@ class ScorecardChecksMixin(models.Model):
     reason = models.CharField(
         max_length=300,
         blank=True,
-        help_text=_("Gives a reason why a score was given for a specific check"
-                    "For eg, : Found 9/10 approved changesets -- score normalized to 9"),
+        help_text=_(
+            "Gives a reason why a score was given for a specific check"
+            "For eg, : Found 9/10 approved changesets -- score normalized to 9"
+        ),
     )
 
     details = models.JSONField(
         default=list,
         blank=True,
-        help_text=_(
-            "A list of details/errors regarding the score"
-        ),
+        help_text=_("A list of details/errors regarding the score"),
     )
 
     class Meta:
         abstract = True
-
-
-
-
