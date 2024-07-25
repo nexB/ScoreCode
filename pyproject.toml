@@ -38,6 +38,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "commoncode",
     "attrs >= 23.2.0",
     "urllib3 >= 2.2.2",
     "click >= 6.7, !=7.0",
