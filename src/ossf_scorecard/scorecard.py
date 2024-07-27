@@ -80,7 +80,7 @@ def fetch_scorecard_info(packages, logger):
         url = package.vcs_url
 
         if url:
-            repo_data = extract_repo_info(url)
+            repo_data = extract_repo_info(url, check_url_existence=True)
 
             if repo_data:
 
@@ -123,17 +123,18 @@ def save_scorecard_info(package_scorecard_data, cls, logger):
                 logger.info(f"No VCS URL Found for {package.name}")
 
 
-def extract_repo_info(url):
+def extract_repo_info(url, check_url_existence=False):
     """
     Extract platform, org, and repo from a given GitHub or GitLab URL.
 
     Args:
         url (str): The URL to parse.
+        check_url_existence (bool): Optionally check if the URL exists. Default is False.
 
     Returns
     -------
         RepoData: Named tuple containing 'platform', 'org', and 'repo' if the URL is
-        valid, else None.
+        valid and exists (if checked), else None.
 
     """
     RepoData = namedtuple("RepoData", ["platform", "org", "repo"])
@@ -158,5 +159,15 @@ def extract_repo_info(url):
 
     org = path_parts[0]
     repo = path_parts[1]
+
+    repo_url = f"https://{hostname}/{org}/{repo}"
+
+    if check_url_existence:
+        try:
+            response = requests.head(repo_url)
+            if response.status_code != 200:
+                return None
+        except requests.RequestException:
+            return None
 
     return RepoData(platform=platform, org=org, repo=repo)
