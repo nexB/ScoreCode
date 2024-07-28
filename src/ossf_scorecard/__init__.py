@@ -7,4 +7,4 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-SCORECARD_API_URL = "https://api.scorecard.dev"
+SCORECARD_API_URL = "https://api.securityscorecards.dev"

@@ -89,7 +89,6 @@ def fetch_scorecard_info(packages, logger):
                 )
 
                 unsaved_objects.append((scorecard_data, package))
-                logger.info(f"Fetching scorecard data for package: {scorecard_data}")
 
     return unsaved_objects
 
@@ -119,8 +118,13 @@ def save_scorecard_info(package_scorecard_data, cls, logger):
                 package = data_pack[1]
                 scorecard_json_data = data_pack[0]
 
-                score_object = cls.create_from_data(scorecard_json_data, package)
-                logger.info(f"No VCS URL Found for {package.name}")
+                score_object = cls.create_from_data(
+                    DiscoveredPackage=package,
+                    scorecard_data=scorecard_json_data,
+                    scoring_tool="OSSF",
+                )
+
+                score_object.save()
 
 
 def extract_repo_info(url, check_url_existence=False):
@@ -146,9 +150,9 @@ def extract_repo_info(url, check_url_existence=False):
         return None
 
     if "github.com" in hostname:
-        platform = "github"
+        platform = "github.com"
     elif "gitlab.com" in hostname:
-        platform = "gitlab"
+        platform = "gitlab.com"
     else:
         return None
 
