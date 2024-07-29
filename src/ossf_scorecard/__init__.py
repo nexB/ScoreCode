@@ -6,3 +6,5 @@
 # See https://github.com/nexB/scancode-toolkit for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+
+SCORECARD_API_URL = "https://api.securityscorecards.dev"

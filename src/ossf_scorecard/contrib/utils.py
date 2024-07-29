@@ -1,4 +1,3 @@
-
 def FetchDocumentationUrl(url: str):
     """
     Given a fully qualified documentation URL with check slugs
@@ -7,12 +6,13 @@ def FetchDocumentationUrl(url: str):
 
     Args:
         url (str): Documentation URL
-        E.g., https://github.com/ossf/scorecard/blob/5d5c2ab2a88adac0a18464f0216b/docs/checks.md#pinned-dependencies
+        E.g., https://github.com/ossf/scorecard/blob/5d5...6b/docs/checks.md#pinned
+        -dependencies
 
     Returns:
 
         url (str): Documentation URL without the check slugs
-        E.g., https://github.com/ossf/scorecard/blob/5d5c2ab2a88adac0a18464f0216b/docs/checks.md
+        E.g., https://github.com/ossf/scorecard/blob/5d5c2ab264f0216b/docs/checks.md
 
     """
 
@@ -22,5 +22,3 @@ def FetchDocumentationUrl(url: str):
 
     except ValueError:
         return None
-
-
