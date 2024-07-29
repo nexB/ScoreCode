@@ -35,7 +35,7 @@ To use Scorecard, you need to call the `GetScorecard` function with the appropri
     repo = "scancode-toolkit"
 
     # Fetch the scorecard
-    data = GetScorecard(platform, org, repo)
+    data = GetScorecard(platform="github.com", org="nexB", repo="scancode-toolkit")
 
     # Print the results
     print("Scoring Tool:", data.scoring_tool)
